@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pelada da Quinta ⚽</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --verde: #1a6b3c;
+    --verde-claro: #2d9e5f;
+    --verde-neon: #39d67c;
+    --preto: #0d0d0d;
+    --card-bg: #141414;
+    --card-border: #1f1f1f;
+    --texto: #f0f0f0;
+    --texto-muted: #888;
+    --danger: #e24b4a;
+    --gold: #f0b429;
+    --azul: #5aadff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--preto);
+    color: var(--texto);
+    font-family: 'Outfit', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      repeating-linear-gradient(90deg, rgba(29,110,60,0.04) 0px, rgba(29,110,60,0.04) 1px, transparent 1px, transparent 80px),
+      repeating-linear-gradient(0deg, rgba(29,110,60,0.04) 0px, rgba(29,110,60,0.04) 1px, transparent 1px, transparent 80px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 2rem 1rem 4rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+
+  .badge-dia {
+    display: inline-block;
+    background: var(--verde);
+    color: var(--verde-neon);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 14px;
+    border-radius: 20px;
+    margin-bottom: 1rem;
+  }
+
+  header h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3rem, 10vw, 5rem);
+    letter-spacing: 3px;
+    line-height: 1;
+    color: var(--texto);
+  }
+
+  header h1 span { color: var(--verde-neon); }
+
+  header p {
+    color: var(--texto-muted);
+    font-size: 14px;
+    margin-top: 0.5rem;
+    font-weight: 300;
+  }
+
+  .contador-bar {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .contador-info {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+
+  .contador-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.8rem;
+    color: var(--verde-neon);
+    line-height: 1;
+  }
+
+  .contador-de {
+    font-size: 1.2rem;
+    color: var(--texto-muted);
+    font-family: 'Bebas Neue', sans-serif;
+  }
+
+  .contador-label {
+    font-size: 12px;
+    color: var(--texto-muted);
+    font-weight: 300;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .progress-bar-wrap {
+    flex: 1;
+    height: 6px;
+    background: rgba(255,255,255,0.07);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--verde), var(--verde-neon));
+    border-radius: 3px;
+    transition: width 0.5s cubic-bezier(.4,0,.2,1);
+  }
+
+  .vagas-badge {
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+
+  .vagas-badge.ok { background: rgba(57,214,124,0.12); color: var(--verde-neon); }
+  .vagas-badge.cheio { background: rgba(226,75,74,0.15); color: var(--danger); }
+
+  /* Mini stats */
+  .mini-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 1.5rem;
+  }
+
+  .mini-stat {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    text-align: center;
+  }
+
+  .mini-stat .val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    line-height: 1;
+  }
+
+  .mini-stat .lbl {
+    font-size: 11px;
+    color: var(--texto-muted);
+    margin-top: 2px;
+    letter-spacing: 0.5px;
+  }
+
+  .mini-stat.verde .val { color: var(--verde-neon); }
+  .mini-stat.azul .val { color: var(--azul); }
+  .mini-stat.gold .val { color: var(--gold); }
+
+  .form-inscricao {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .form-inscricao h2 {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--texto-muted);
+    margin-bottom: 1rem;
+    font-weight: 500;
+  }
+
+  .input-row {
+    display: flex;
+    gap: 8px;
+  }
+
+  .input-nome {
+    flex: 1;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    color: var(--texto);
+    font-family: 'Outfit', sans-serif;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .input-nome::placeholder { color: var(--texto-muted); }
+  .input-nome:focus { border-color: var(--verde-claro); }
+
+  .btn-confirmar {
+    background: var(--verde-neon);
+    color: var(--preto);
+    border: none;
+    border-radius: 10px;
+    padding: 12px 20px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+  }
+
+  .btn-confirmar:hover { background: #5fefab; transform: scale(1.02); }
+  .btn-confirmar:active { transform: scale(0.98); }
+  .btn-confirmar:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  .lista-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+  }
+
+  .lista-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--card-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .lista-header h2 {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--texto-muted);
+    font-weight: 500;
+  }
+
+  .btn-limpar {
+    background: none;
+    border: 1px solid rgba(226,75,74,0.3);
+    color: var(--danger);
+    border-radius: 8px;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-family: 'Outfit', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-limpar:hover { background: rgba(226,75,74,0.1); }
+
+  .secao-divisor {
+    padding: 6px 1.5rem;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .secao-divisor.titulares { color: var(--verde-neon); background: rgba(57,214,124,0.05); border-bottom: 1px solid rgba(57,214,124,0.1); }
+  .secao-divisor.fora { color: var(--gold); background: rgba(240,180,41,0.05); border-bottom: 1px solid rgba(240,180,41,0.08); border-top: 1px solid rgba(240,180,41,0.08); }
+
+  .lista-vazia {
+    padding: 3rem 1.5rem;
+    text-align: center;
+    color: var(--texto-muted);
+    font-size: 14px;
+  }
+
+  .lista-vazia .icon { font-size: 2rem; margin-bottom: 0.5rem; display: block; }
+
+  .jogador-item {
+    display: flex;
+    align-items: center;
+    padding: 0.85rem 1.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    gap: 12px;
+    transition: background 0.15s;
+    animation: slideIn 0.25s ease;
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(-10px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .jogador-item:last-child { border-bottom: none; }
+  .jogador-item:hover { background: rgba(255,255,255,0.03); }
+
+  .jogador-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem;
+    color: var(--texto-muted);
+    width: 22px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .jogador-num.destaque { color: var(--gold); }
+
+  .avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--verde);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--verde-neon);
+    flex-shrink: 0;
+    text-transform: uppercase;
+  }
+
+  .avatar.fora-avatar {
+    opacity: 0.5;
+  }
+
+  .jogador-nome {
+    flex: 1;
+    font-size: 15px;
+    font-weight: 400;
+  }
+
+  .jogador-nome.fora-nome {
+    opacity: 0.6;
+  }
+
+  .tag {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+
+  .tag-fora { background: rgba(240,180,41,0.12); color: var(--gold); }
+
+  .btn-remover {
+    background: none;
+    border: none;
+    color: rgba(226,75,74,0.5);
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 6px;
+    font-size: 16px;
+    line-height: 1;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+
+  .btn-remover:hover { color: var(--danger); background: rgba(226,75,74,0.1); }
+
+  .btn-sortear {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, var(--verde), var(--verde-claro));
+    border: none;
+    border-radius: 14px;
+    color: #fff;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.25s;
+    margin-bottom: 1.5rem;
+  }
+
+  .btn-sortear:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(57,214,124,0.2); }
+  .btn-sortear:active { transform: translateY(0); }
+  .btn-sortear:disabled { opacity: 0.35; cursor: not-allowed; transform: none; box-shadow: none; }
+
+  .btn-sortear.sorteando { animation: pulse 0.8s infinite; }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+  }
+
+  /* Resultado */
+  .resultado-wrap { display: none; margin-bottom: 1.5rem; }
+  .resultado-wrap.visivel { display: block; animation: fadeUp 0.4s ease; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .times-resultado {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .time-card {
+    background: var(--card-bg);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .time-card.time-a { border: 1px solid rgba(57,214,124,0.25); }
+  .time-card.time-b { border: 1px solid rgba(90,173,255,0.25); }
+
+  .time-header {
+    padding: 0.75rem 1rem;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.2rem;
+    letter-spacing: 1.5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .time-a .time-header { background: rgba(57,214,124,0.08); color: var(--verde-neon); }
+  .time-b .time-header { background: rgba(90,173,255,0.08); color: var(--azul); }
+
+  .time-lista { padding: 0.5rem 0; }
+
+  .time-jogador {
+    padding: 6px 1rem;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    animation: slideIn 0.3s ease;
+  }
+
+  .time-jogador .bolinha {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .time-a .bolinha { background: var(--verde-neon); }
+  .time-b .bolinha { background: var(--azul); }
+
+  /* Card de fora */
+  .fora-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(240,180,41,0.2);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .fora-header {
+    padding: 0.75rem 1rem;
+    background: rgba(240,180,41,0.06);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 1.5px;
+    color: var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .fora-lista {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 0.75rem 1rem;
+  }
+
+  .fora-pill {
+    background: rgba(240,180,41,0.08);
+    border: 1px solid rgba(240,180,41,0.15);
+    color: var(--gold);
+    font-size: 13px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    animation: slideIn 0.3s ease;
+  }
+
+  .btn-ressortear {
+    display: block;
+    margin: 0 auto 1.5rem;
+    background: none;
+    border: 1px solid var(--card-border);
+    color: var(--texto-muted);
+    border-radius: 10px;
+    padding: 8px 20px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-ressortear:hover { border-color: var(--verde-claro); color: var(--verde-neon); }
+
+  footer {
+    text-align: center;
+    color: var(--texto-muted);
+    font-size: 12px;
+    opacity: 0.5;
+    margin-top: 2rem;
+  }
+
+  .toast {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: #1c1c1c;
+    border: 1px solid var(--card-border);
+    color: var(--texto);
+    padding: 10px 20px;
+    border-radius: 100px;
+    font-size: 13px;
+    z-index: 999;
+    transition: transform 0.3s cubic-bezier(.4,0,.2,1);
+    white-space: nowrap;
+  }
+
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 480px) {
+    .times-resultado { grid-template-columns: 1fr; }
+    .input-row { flex-direction: column; }
+    header h1 { font-size: 3rem; }
+    .mini-stats { grid-template-columns: 1fr 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <header>
+    <div class="badge-dia">⚽ Toda quinta-feira</div>
+    <h1>PELADA<br><span>DA QUINTA</span></h1>
+    <p>Confirme sua presença · Máx. 18 jogadores</p>
+  </header>
+
+  <!-- Contador principal -->
+  <div class="contador-bar">
+    <div>
+      <div class="contador-info">
+        <div class="contador-num" id="numInscritos">0</div>
+        <div class="contador-de">/18</div>
+      </div>
+      <div class="contador-label">Confirmados</div>
+    </div>
+    <div style="flex:1; padding: 0 1rem;">
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill" id="progressBar" style="width:0%"></div>
+      </div>
+    </div>
+    <div class="vagas-badge ok" id="vagasBadge">18 vagas</div>
+  </div>
+
+  <!-- Mini stats -->
+  <div class="mini-stats">
+    <div class="mini-stat verde">
+      <div class="val" id="statTitulares">0</div>
+      <div class="lbl">Na quadra</div>
+    </div>
+    <div class="mini-stat azul">
+      <div class="val" id="statTimes">—</div>
+      <div class="lbl">Times (6+6)</div>
+    </div>
+    <div class="mini-stat gold">
+      <div class="val" id="statFora">0</div>
+      <div class="lbl">De fora</div>
+    </div>
+  </div>
+
+  <!-- Form -->
+  <div class="form-inscricao">
+    <h2>Confirmar presença</h2>
+    <div class="input-row">
+      <input type="text" class="input-nome" id="inputNome" placeholder="Seu nome..." maxlength="30" autocomplete="off">
+      <button class="btn-confirmar" id="btnConfirmar" onclick="confirmarPresenca()">Confirmar ✓</button>
+    </div>
+  </div>
+
+  <!-- Lista -->
+  <div class="lista-card">
+    <div class="lista-header">
+      <h2>Lista da galera</h2>
+      <button class="btn-limpar" onclick="limparLista()">Limpar lista</button>
+    </div>
+    <div id="listaJogadores">
+      <div class="lista-vazia">
+        <span class="icon">🏟️</span>
+        Ninguém confirmado ainda.<br>Seja o primeiro!
+      </div>
+    </div>
+  </div>
+
+  <!-- Botão sortear -->
+  <button class="btn-sortear" id="btnSortear" onclick="sortearTimes()" disabled>
+    ⚡ SORTEAR OS TIMES (12 PRIMEIROS)
+  </button>
+
+  <!-- Resultado do sorteio -->
+  <div class="resultado-wrap" id="resultadoWrap">
+    <div class="times-resultado">
+      <div class="time-card time-a">
+        <div class="time-header">
+          <span>TIME A</span>
+          <span>🟢</span>
+        </div>
+        <div class="time-lista" id="listaTimeA"></div>
+      </div>
+      <div class="time-card time-b">
+        <div class="time-header">
+          <span>TIME B</span>
+          <span>🔵</span>
+        </div>
+        <div class="time-lista" id="listaTimeB"></div>
+      </div>
+    </div>
+
+    <div class="fora-card" id="foraCard" style="display:none">
+      <div class="fora-header">
+        <span>DE FORA DA QUADRA</span>
+        <span>⏳</span>
+      </div>
+      <div class="fora-lista" id="listaFora"></div>
+    </div>
+  </div>
+
+  <button class="btn-ressortear" id="btnRessortear" style="display:none" onclick="sortearTimes()">
+    🔀 Ressortear
+  </button>
+
+  <footer>
+    Lista salva automaticamente · 6 jogadores por time · Sorteio dos 12 primeiros
+  </footer>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const MAX = 18;
+const MAX_QUADRA = 12;
+const POR_TIME = 6;
+let jogadores = [];
+
+function salvar() {
+  localStorage.setItem('pelada_quinta', JSON.stringify(jogadores));
+}
+
+function carregar() {
+  const s = localStorage.getItem('pelada_quinta');
+  if (s) jogadores = JSON.parse(s);
+}
+
+function iniciais(nome) {
+  return nome.trim().split(' ').map(p => p[0]).slice(0, 2).join('').toUpperCase();
+}
+
+function avatarColor(i) {
+  const cores = ['#1a6b3c','#0f6e56','#185fa5','#3b6d11','#854f0b','#993556','#533ab7'];
+  return cores[i % cores.length];
+}
+
+function mostrarToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+function atualizar() {
+  const n = jogadores.length;
+  const titulares = Math.min(n, MAX_QUADRA);
+  const fora = Math.max(0, n - MAX_QUADRA);
+
+  document.getElementById('numInscritos').textContent = n;
+  document.getElementById('progressBar').style.width = ((n / MAX) * 100) + '%';
+  document.getElementById('statTitulares').textContent = titulares;
+  document.getElementById('statTimes').textContent = titulares >= 12 ? '✓' : Math.floor(titulares / POR_TIME);
+  document.getElementById('statFora').textContent = fora;
+
+  const badge = document.getElementById('vagasBadge');
+  const vagas = MAX - n;
+  if (vagas === 0) {
+    badge.textContent = 'Lista cheia!';
+    badge.className = 'vagas-badge cheio';
+  } else {
+    badge.textContent = vagas + (vagas === 1 ? ' vaga' : ' vagas');
+    badge.className = 'vagas-badge ok';
+  }
+
+  document.getElementById('btnSortear').disabled = n < 2;
+  document.getElementById('btnConfirmar').disabled = n >= MAX;
+
+  const lista = document.getElementById('listaJogadores');
+  if (n === 0) {
+    lista.innerHTML = '<div class="lista-vazia"><span class="icon">🏟️</span>Ninguém confirmado ainda.<br>Seja o primeiro!</div>';
+    return;
+  }
+
+  let html = '';
+
+  // Seção titulares (1-12)
+  if (jogadores.length > 0) {
+    html += '<div class="secao-titulares">';
+    if (jogadores.length > MAX_QUADRA) {
+      html += '<div class="secao-divisor titulares">⚽ Na quadra (1–12)</div>';
+    }
+    jogadores.slice(0, MAX_QUADRA).forEach((nome, i) => {
+      html += `
+        <div class="jogador-item">
+          <div class="jogador-num ${i < 3 ? 'destaque' : ''}">${i + 1}</div>
+          <div class="avatar" style="background:${avatarColor(i)}">${iniciais(nome)}</div>
+          <div class="jogador-nome">${nome}</div>
+          <button class="btn-remover" onclick="remover(${i})" title="Remover">✕</button>
+        </div>`;
+    });
+    html += '</div>';
+  }
+
+  // Seção fora (13-18)
+  if (jogadores.length > MAX_QUADRA) {
+    html += '<div class="secao-fora">';
+    html += '<div class="secao-divisor fora">⏳ De fora da quadra (aguardando)</div>';
+    jogadores.slice(MAX_QUADRA).forEach((nome, i) => {
+      const idx = MAX_QUADRA + i;
+      html += `
+        <div class="jogador-item">
+          <div class="jogador-num">${idx + 1}</div>
+          <div class="avatar fora-avatar" style="background:${avatarColor(idx)}">${iniciais(nome)}</div>
+          <div class="jogador-nome fora-nome">${nome} <span class="tag tag-fora">Fora</span></div>
+          <button class="btn-remover" onclick="remover(${idx})" title="Remover">✕</button>
+        </div>`;
+    });
+    html += '</div>';
+  }
+
+  lista.innerHTML = html;
+}
+
+function confirmarPresenca() {
+  const input = document.getElementById('inputNome');
+  const nome = input.value.trim();
+
+  if (!nome) { mostrarToast('Digite seu nome!'); input.focus(); return; }
+  if (jogadores.length >= MAX) { mostrarToast('Lista cheia! Máx. 18 jogadores.'); return; }
+  if (jogadores.map(j => j.toLowerCase()).includes(nome.toLowerCase())) {
+    mostrarToast('Esse nome já está na lista!'); return;
+  }
+
+  jogadores.push(nome);
+  salvar();
+  atualizar();
+  input.value = '';
+  input.focus();
+
+  const pos = jogadores.length;
+  if (pos > MAX_QUADRA) {
+    mostrarToast(`${nome} entrou como ${pos}º — de fora da quadra por ora!`);
+  } else {
+    mostrarToast(`${nome} confirmado! (${pos}/${MAX_QUADRA} na quadra)`);
+  }
+}
+
+function remover(i) {
+  const nome = jogadores[i];
+  jogadores.splice(i, 1);
+  salvar();
+  atualizar();
+  esconderResultado();
+  mostrarToast(`${nome} removido da lista`);
+}
+
+function limparLista() {
+  if (jogadores.length === 0) return;
+  if (!confirm('Limpar toda a lista? Essa ação não pode ser desfeita.')) return;
+  jogadores = [];
+  salvar();
+  atualizar();
+  esconderResultado();
+  mostrarToast('Lista limpa!');
+}
+
+function esconderResultado() {
+  document.getElementById('resultadoWrap').classList.remove('visivel');
+  document.getElementById('btnRessortear').style.display = 'none';
+}
+
+function embaralhar(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+async function sortearTimes() {
+  const btn = document.getElementById('btnSortear');
+  btn.classList.add('sorteando');
+  btn.disabled = true;
+  btn.textContent = '🎲 Sorteando...';
+
+  await new Promise(r => setTimeout(r, 900));
+
+  // Pega os 12 primeiros para o sorteio
+  const paraQuadra = jogadores.slice(0, MAX_QUADRA);
+  const foraQuadra = jogadores.slice(MAX_QUADRA);
+
+  const embaralhados = embaralhar(paraQuadra);
+  const timeA = embaralhados.slice(0, POR_TIME);
+  const timeB = embaralhados.slice(POR_TIME);
+
+  document.getElementById('listaTimeA').innerHTML = timeA.map(n =>
+    `<div class="time-jogador"><div class="bolinha"></div>${n}</div>`
+  ).join('');
+
+  document.getElementById('listaTimeB').innerHTML = timeB.map(n =>
+    `<div class="time-jogador"><div class="bolinha"></div>${n}</div>`
+  ).join('');
+
+  // Fora da quadra
+  const foraCard = document.getElementById('foraCard');
+  if (foraQuadra.length > 0) {
+    document.getElementById('listaFora').innerHTML = foraQuadra.map(n =>
+      `<div class="fora-pill">${n}</div>`
+    ).join('');
+    foraCard.style.display = 'block';
+  } else {
+    foraCard.style.display = 'none';
+  }
+
+  document.getElementById('resultadoWrap').classList.add('visivel');
+  document.getElementById('btnRessortear').style.display = 'block';
+  document.getElementById('resultadoWrap').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+  btn.classList.remove('sorteando');
+  btn.disabled = false;
+  btn.textContent = '⚡ SORTEAR OS TIMES (12 PRIMEIROS)';
+
+  mostrarToast('Times sorteados! Boa pelada 🏆');
+}
+
+document.getElementById('inputNome').addEventListener('keypress', e => {
+  if (e.key === 'Enter') confirmarPresenca();
+});
+
+carregar();
+atualizar();
+</script>
+</body>
+</html>
